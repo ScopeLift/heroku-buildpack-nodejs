@@ -137,7 +137,7 @@ yarn_node_modules() {
 
   echo "Installing node modules (yarn.lock)"
   cd "$build_dir" || return
-  monitor "yarn-install" yarn install --production="$production" --frozen-lockfile --ignore-engines 2>&1
+  monitor "yarn-install" yarn install --network-concurrency 1 --production="$production" --frozen-lockfile --ignore-engines 2>&1
 }
 
 yarn_2_install() {
@@ -148,9 +148,9 @@ yarn_2_install() {
 
   # If there is no cache we can't run immutable cache because a cache will be created by default
   if ! has_yarn_cache "$build_dir"; then
-    monitor "yarn-2-install" yarn install --immutable 2>&1
+    monitor "yarn-2-install" yarn install --network-concurrency 1 --immutable 2>&1
   else
-    monitor "yarn-2-install" yarn install --immutable --immutable-cache 2>&1
+    monitor "yarn-2-install" yarn install --network-concurrency 1 --immutable --immutable-cache 2>&1
   fi
 }
 
@@ -189,7 +189,7 @@ yarn_prune_devdependencies() {
     fi
   else
     cd "$build_dir" || return
-    monitor "yarn-prune" yarn install --frozen-lockfile --ignore-engines --ignore-scripts --prefer-offline 2>&1
+    monitor "yarn-prune" yarn install --network-concurrency 1 --frozen-lockfile --ignore-engines --ignore-scripts --prefer-offline 2>&1
     meta_set "skipped-prune" "false"
   fi
 }
